@@ -97,6 +97,8 @@ require_dir "$STANDARDS_DIR/templates"
 require_file "$STANDARDS_DIR/scripts/bootstrap_repo.sh"
 require_file "$STANDARDS_DIR/scripts/init_spec.sh"
 require_file "$STANDARDS_DIR/scripts/prepare_spec_prompt.sh"
+require_file "$STANDARDS_DIR/scripts/prepare_task_prompt.sh"
+require_file "$STANDARDS_DIR/scripts/prepare_pr_prompt.sh"
 require_file "$STANDARDS_DIR/scripts/check_spec.sh"
 
 if [[ "$fail_count" -ne 0 ]]; then
@@ -130,6 +132,22 @@ mkdir -p "$(dirname "$SOURCE_DOC")"
 printf '# Demo PRD\n\nValidate first onboarding flow.\n' > "$SOURCE_DOC"
 pass "temporary source doc created: $SOURCE_DOC"
 
+TASKS_FILE="$HARNESS_DIR/specs/$SPEC_ID/03-tasks.md"
+TMP_TASKS_FILE="/tmp/${SPEC_ID}-03-tasks.md"
+awk '
+  BEGIN { replaced = 0 }
+  !replaced && $0 == "- Task ID: `T1`" {
+    print
+    getline
+    print "- Purpose: Validate task prompt generation."
+    replaced = 1
+    next
+  }
+  { print }
+' "$TASKS_FILE" > "$TMP_TASKS_FILE"
+mv "$TMP_TASKS_FILE" "$TASKS_FILE"
+pass "temporary task id seeded for prompt generation: $TASKS_FILE"
+
 if bash "$STANDARDS_DIR/scripts/prepare_spec_prompt.sh" "$SPEC_ID" "$SOURCE_DOC" > "$PROMPT_OUT"; then
   pass "spec preparation prompt generated"
 else
@@ -141,6 +159,34 @@ if [[ -s "$PROMPT_OUT" ]]; then
   pass "prompt output is non-empty: $PROMPT_OUT"
 else
   fail "prompt output is empty: $PROMPT_OUT"
+fi
+
+TASK_PROMPT_OUT="/tmp/${SPEC_ID}-task-prompt.txt"
+if bash "$STANDARDS_DIR/scripts/prepare_task_prompt.sh" "$SPEC_ID" T1 > "$TASK_PROMPT_OUT"; then
+  pass "task development prompt generated"
+else
+  fail "task development prompt generated"
+  finish
+fi
+
+if [[ -s "$TASK_PROMPT_OUT" ]]; then
+  pass "task prompt output is non-empty: $TASK_PROMPT_OUT"
+else
+  fail "task prompt output is empty: $TASK_PROMPT_OUT"
+fi
+
+PR_PROMPT_OUT="/tmp/${SPEC_ID}-pr-prompt.txt"
+if bash "$STANDARDS_DIR/scripts/prepare_pr_prompt.sh" "$SPEC_ID" T1 main "feat/${SPEC_ID}-T1" > "$PR_PROMPT_OUT"; then
+  pass "pr preparation prompt generated"
+else
+  fail "pr preparation prompt generated"
+  finish
+fi
+
+if [[ -s "$PR_PROMPT_OUT" ]]; then
+  pass "pr prompt output is non-empty: $PR_PROMPT_OUT"
+else
+  fail "pr prompt output is empty: $PR_PROMPT_OUT"
 fi
 
 if bash "$STANDARDS_DIR/scripts/check_spec.sh" "$SPEC_ID" >/tmp/"${SPEC_ID}-check-spec.log" 2>&1; then
