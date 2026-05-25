@@ -30,6 +30,7 @@ EMPTY_FIELD_PATTERNS=(
   "Changes"
   "Validation"
   "Done"
+  "Complexity"
   "Depends On"
 )
 
@@ -63,7 +64,7 @@ else
     for field in "${EMPTY_FIELD_PATTERNS[@]}"; do
       if awk -v field="$field" '
         function is_field_line(line) {
-          return line ~ /^- (Task ID|Purpose|Inputs|Changes|Validation|Done|Depends On):/
+          return line ~ /^- (Task ID|Purpose|Inputs|Changes|Validation|Done|Complexity|Depends On):/
         }
 
         function finish_pending() {

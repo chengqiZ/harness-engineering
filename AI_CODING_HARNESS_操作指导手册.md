@@ -27,7 +27,59 @@ git commit -m "chore(harness): setup ai coding harness"
 - `/.ai-harness/AGENTS.md`
 - 业务仓库的首个 `spec-id`
 
-## 3. 每个需求的标准流程
+初始化后优先验证：
+
+```bash
+./ai status
+```
+
+## 3. 日常自动化流程
+
+业务仓库根目录提供单一入口 `./ai`：
+
+```bash
+./ai status
+./ai spec <spec-id> <source-doc>
+./ai next <spec-id>
+./ai work <spec-id> <task-id>
+./ai pr <spec-id> <task-id> [target-branch]
+./ai run <spec-id> <source-doc>
+```
+
+推荐日常用法：
+
+1. 从需求文档生成 spec 并自动推进首个 `S` 任务：
+
+```bash
+./ai run <spec-id> <source-doc>
+```
+
+2. 已有 spec 时，查看下一个可执行任务：
+
+```bash
+./ai next <spec-id>
+```
+
+3. 只执行一个任务：
+
+```bash
+./ai work <spec-id> <task-id>
+```
+
+4. 任务完成后整理 MR 材料、提交并推送：
+
+```bash
+./ai pr <spec-id> <task-id> main
+```
+
+自动化边界：
+- `S` 任务可在 spec 检查通过后自动进入开发。
+- `M/L`、Open Questions、DB/auth/权限/billing/风险逻辑相关任务会暂停并要求人工确认。
+- `./ai work` 开始前会把已有脏工作区保存成 named stash，输出恢复提示；当前 spec 文件如有未提交修改会保留在工作区作为任务上下文。
+- `./ai pr` 提交和推送前必须暂停，展示 diff 摘要、测试证据、风险、回滚方案、commit message 和 MR 描述。
+- v1 不调用 GitLab API 创建 MR，只生成可粘贴的 MR 材料。
+
+## 4. 高级/排错流程：逐脚本使用
 
 1. 运行 `bash .ai-harness/.ai-standards/scripts/init_spec.sh <spec-id>`
 2. 运行 `bash .ai-harness/.ai-standards/scripts/prepare_spec_prompt.sh <spec-id> <source-doc>`
@@ -42,9 +94,9 @@ git commit -m "chore(harness): setup ai coding harness"
 7. 一次只做一个 `task-id`
 8. 每次提交附验证证据
 
-## 4. 可直接复制的提示词（重点）
+## 5. 可直接复制的提示词（重点）
 
-### 4.1 通用启动提示词（每个需求第一条）
+### 5.1 通用启动提示词（每个需求第一条）
 
 ```text
 请按以下优先级读取并遵循规范：
@@ -61,7 +113,7 @@ git commit -m "chore(harness): setup ai coding harness"
 先不要写代码，先审阅 .ai-harness/specs/<spec-id>/01-requirements.md 并输出缺失项与歧义问题清单。
 ```
 
-### 4.2 需求澄清提示词
+### 5.2 需求澄清提示词
 
 ```text
 基于 .ai-harness/specs/<spec-id>/01-requirements.md，
@@ -72,7 +124,7 @@ git commit -m "chore(harness): setup ai coding harness"
 要求：仅输出可落地结论，不输出泛化建议。
 ```
 
-### 4.3 任务拆解提示词
+### 5.3 任务拆解提示词
 
 ```text
 请基于 .ai-harness/specs/<spec-id>/01-requirements.md 和 .ai-harness/.ai-standards 规范生成 .ai-harness/specs/<spec-id>/03-tasks.md。
@@ -83,7 +135,7 @@ git commit -m "chore(harness): setup ai coding harness"
 4) 标记任务复杂度 S/M/L，并说明原因
 ```
 
-### 4.4 设计文档提示词（Vue + Java + MySQL）
+### 5.4 设计文档提示词（Vue + Java + MySQL）
 
 ```text
 请生成 .ai-harness/specs/<spec-id>/02-design.md，遵循 .ai-harness/.ai-standards/standards/*：
@@ -93,7 +145,7 @@ git commit -m "chore(harness): setup ai coding harness"
 4) API：请求响应契约、错误码、兼容策略
 ```
 
-### 4.5 单任务开发提示词
+### 5.5 单任务开发提示词
 
 ```text
 现在只实现 .ai-harness/specs/<spec-id>/03-tasks.md 中的 <task-id>。
@@ -114,7 +166,7 @@ git commit -m "chore(harness): setup ai coding harness"
 - 若需要突破限制，先说明并等待确认
 ```
 
-### 4.6 代码评审提示词
+### 5.6 代码评审提示词
 
 ```text
 请按“高风险优先”评审本次改动，基于 .ai-harness/.ai-standards 规范输出：
@@ -130,7 +182,7 @@ git commit -m "chore(harness): setup ai coding harness"
 - 修复建议
 ```
 
-### 4.7 PR 说明生成提示词
+### 5.7 PR 说明生成提示词
 
 ```text
 请为 <task-id> 生成 PR 描述，必须包含：
@@ -143,7 +195,7 @@ git commit -m "chore(harness): setup ai coding harness"
 7) Exception/Reason/Scope/Expiry（如有例外）
 ```
 
-### 4.8 发布前验收提示词
+### 5.8 发布前验收提示词
 
 ```text
 请按 .ai-harness/specs/<spec-id>/04-acceptance.md 与 .ai-harness/.ai-standards/standards/testing.md 规范做最终验收。
@@ -155,7 +207,7 @@ git commit -m "chore(harness): setup ai coding harness"
 并给出依据。
 ```
 
-### 4.9 规范升级提示词（子模块版本升级后）
+### 5.9 规范升级提示词（子模块版本升级后）
 
 ```text
 当前项目已将 .ai-harness/.ai-standards 升级到 <tag-or-sha>。
@@ -166,7 +218,7 @@ git commit -m "chore(harness): setup ai coding harness"
 4) 建议的修复顺序（P0/P1/P2）
 ```
 
-## 5. 子模块升级操作
+## 6. 子模块升级操作
 
 ```bash
 git submodule update --remote .ai-harness/.ai-standards
@@ -179,10 +231,10 @@ git commit -m "chore(standards): upgrade .ai-harness/.ai-standards to <tag-or-sh
 - 运行“规范升级提示词”
 - 提交升级影响评估
 
-## 6. 常见问题
+## 7. 常见问题
 
 ### Q1：AI 没有读取子模块规范怎么办？
-- 在第一条提示词里明确列出规范读取顺序（见 4.1）。
+- 在第一条提示词里明确列出规范读取顺序（见 5.1）。
 - 要求 AI 先“复述已读取的规范来源”。
 
 ### Q2：项目需要例外规则怎么办？
@@ -191,11 +243,11 @@ git commit -m "chore(standards): upgrade .ai-harness/.ai-standards to <tag-or-sh
 ### Q3：规范升级后有回归怎么办？
 - 回退 `.ai-harness/.ai-standards` 到上一个稳定 tag/SHA，单独提 PR。
 
-## 7. 日常最短使用法（3条）
+## 8. 日常最短使用法（3条）
 
-1. 每个需求先发 `4.1 通用启动提示词`  
-2. 每个任务开发前发 `4.5 单任务开发提示词`  
-3. 合并前发 `4.8 发布前验收提示词`
+1. 自动化优先：`./ai run <spec-id> <source-doc>`
+2. 单任务开发：`./ai work <spec-id> <task-id>`
+3. 合并前整理：`./ai pr <spec-id> <task-id> main`
 
 如果已有需求文档或方案文档，先运行：
 
@@ -205,7 +257,7 @@ bash .ai-harness/.ai-standards/scripts/prepare_spec_prompt.sh <spec-id> <source-
 
 再把输出提示词交给 AI 补齐 spec。
 
-## 8. 规范源仓库维护者补充动作
+## 9. 规范源仓库维护者补充动作
 
 当你维护当前规范源仓库时，建议同步维护以下资料：
 - `templates/*.md`
