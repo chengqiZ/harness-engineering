@@ -36,3 +36,12 @@
 
 - [ ] T1
 - [ ] T2
+
+## Run Checkpoint
+
+- Last Command:
+- Current Task:
+- Current Step:
+- Resume Command:
+- Last Result:
+- Last Error:

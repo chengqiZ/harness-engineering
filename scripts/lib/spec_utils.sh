@@ -161,3 +161,58 @@ task_is_high_risk() {
   body="$(task_field "$tasks_file" "$task_id" "Purpose"; task_field "$tasks_file" "$task_id" "Changes")"
   printf '%s\n' "$body" | grep -iqE 'db|database|migration|auth|permission|billing|risk|权限|认证|鉴权|迁移|账单|风控'
 }
+
+task_run_checkpoint_update() {
+  local tasks_file="$1"
+  local last_command="$2"
+  local current_task="$3"
+  local current_step="$4"
+  local resume_command="$5"
+  local last_result="$6"
+  local last_error="${7:-}"
+  local tmp_file
+
+  last_error="$(printf '%s' "$last_error" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g; s/^[[:space:]]+|[[:space:]]+$//g')"
+  tmp_file="$(mktemp)"
+
+  awk \
+    -v last_command="$last_command" \
+    -v current_task="$current_task" \
+    -v current_step="$current_step" \
+    -v resume_command="$resume_command" \
+    -v last_result="$last_result" \
+    -v last_error="$last_error" '
+    function print_checkpoint() {
+      print "## Run Checkpoint"
+      print ""
+      print "- Last Command: `" last_command "`"
+      print "- Current Task: `" current_task "`"
+      print "- Current Step: `" current_step "`"
+      print "- Resume Command: `" resume_command "`"
+      print "- Last Result: `" last_result "`"
+      print "- Last Error: " last_error
+    }
+    /^## Run Checkpoint[[:space:]]*$/ {
+      if (!printed) {
+        print_checkpoint()
+        printed = 1
+      }
+      skipping = 1
+      next
+    }
+    skipping && /^## / {
+      skipping = 0
+    }
+    !skipping {
+      print
+    }
+    END {
+      if (!printed) {
+        print ""
+        print_checkpoint()
+      }
+    }
+  ' "$tasks_file" > "$tmp_file"
+
+  mv "$tmp_file" "$tasks_file"
+}

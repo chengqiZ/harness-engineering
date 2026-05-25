@@ -8,6 +8,12 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_DIR="$(pwd)"
 HARNESS_DIR=".ai-harness"
 STANDARDS_DIR="$HARNESS_DIR/.ai-standards"
+RUN_CHECKPOINT_ACTIVE=0
+RUN_CHECKPOINT_TASKS_FILE=""
+RUN_CHECKPOINT_LAST_COMMAND=""
+RUN_CHECKPOINT_TASK_ID=""
+RUN_CHECKPOINT_STEP=""
+RUN_CHECKPOINT_RESUME_COMMAND=""
 
 source "$SCRIPT_DIR/lib/git_utils.sh"
 source "$SCRIPT_DIR/lib/spec_utils.sh"
@@ -68,6 +74,33 @@ print_stash_recovery() {
   [[ -z "$stash_name" ]] && return 0
   say "stash: $stash_name"
   say "restore: git stash list | grep '$stash_name' && git stash pop stash@{N}"
+}
+
+run_checkpoint_on_exit() {
+  local exit_code="$?"
+  if [[ "${RUN_CHECKPOINT_ACTIVE:-0}" = "1" && "$exit_code" -ne 0 ]]; then
+    task_run_checkpoint_update "$RUN_CHECKPOINT_TASKS_FILE" "$RUN_CHECKPOINT_LAST_COMMAND" "$RUN_CHECKPOINT_TASK_ID" "$RUN_CHECKPOINT_STEP" "$RUN_CHECKPOINT_RESUME_COMMAND" "failed" "$RUN_CHECKPOINT_STEP command failed"
+    say "run failed"
+    say "resume from: $RUN_CHECKPOINT_RESUME_COMMAND"
+    say "checkpoint: $RUN_CHECKPOINT_TASKS_FILE"
+  fi
+}
+
+run_checkpoint_set() {
+  local tasks_file="$1"
+  local last_command="$2"
+  local task_id="$3"
+  local step="$4"
+  local resume_command="$5"
+  local result="$6"
+
+  RUN_CHECKPOINT_ACTIVE=1
+  RUN_CHECKPOINT_TASKS_FILE="$tasks_file"
+  RUN_CHECKPOINT_LAST_COMMAND="$last_command"
+  RUN_CHECKPOINT_TASK_ID="$task_id"
+  RUN_CHECKPOINT_STEP="$step"
+  RUN_CHECKPOINT_RESUME_COMMAND="$resume_command"
+  task_run_checkpoint_update "$tasks_file" "$last_command" "$task_id" "$step" "$resume_command" "$result" ""
 }
 
 spec_has_dirty_files() {
@@ -246,8 +279,9 @@ cmd_run() {
   require_repo
   local spec_id="$1"
   local source_doc="$2"
-  local next_output task_id complexity tasks_file stash_name
+  local next_output task_id complexity tasks_file stash_name run_command
 
+  run_command="./ai run $spec_id $source_doc"
   stash_name="$(git_named_stash_excluding "before-run-${spec_id}" ".ai-harness/specs/$spec_id" "$source_doc")"
   print_stash_recovery "$stash_name"
   cmd_spec "$spec_id" "$source_doc"
@@ -255,13 +289,19 @@ cmd_run() {
   task_id="$(printf '%s\n' "$next_output" | head -n 1)"
   tasks_file="$(spec_tasks_file "$spec_id")"
   complexity="$(task_complexity "$tasks_file" "$task_id")"
+  trap run_checkpoint_on_exit EXIT
+  run_checkpoint_set "$tasks_file" "$run_command" "$task_id" "work" "./ai work $spec_id $task_id" "pending"
 
   if spec_has_open_questions "$spec_id" || [[ "$complexity" != "S" ]] || task_is_high_risk "$tasks_file" "$task_id"; then
     confirm_or_stop "Spec has open questions or next task needs manual confirmation: $task_id"
   fi
 
   AI_SKIP_WORK_STASH=1 cmd_work "$spec_id" "$task_id"
+  run_checkpoint_set "$tasks_file" "$run_command" "$task_id" "pr" "./ai pr $spec_id $task_id main" "pending"
   cmd_pr "$spec_id" "$task_id" main
+  task_run_checkpoint_update "$tasks_file" "$run_command" "$task_id" "pr" "./ai pr $spec_id $task_id main" "passed" ""
+  RUN_CHECKPOINT_ACTIVE=0
+  trap - EXIT
 }
 
 main() {

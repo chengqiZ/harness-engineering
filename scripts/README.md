@@ -21,6 +21,8 @@
 - 已有 spec，只执行一个任务：`./ai work <spec-id> <task-id>`
 - 任务完成后生成 MR 材料并提交推送：`./ai pr <spec-id> <task-id> main`
 
+`./ai run` 会在 `.ai-harness/specs/<spec-id>/03-tasks.md` 的 `Run Checkpoint` 中记录当前 task、当前步骤和恢复命令。失败后优先查看 `Resume Command`，例如 `./ai work <spec-id> <task-id>` 或 `./ai pr <spec-id> <task-id> main`。
+
 `./ai` 会自动调用 `codex exec -C <business-repo> --sandbox workspace-write`，并将 approval policy 设为 `never`（按本机 Codex CLI 支持情况选择 `--ask-for-approval never` 或等价配置）。它不会使用危险的 sandbox 绕过参数，也不会直接调用 GitLab API 创建 MR。
 
 ## Bootstrap
