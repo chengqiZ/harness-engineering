@@ -56,6 +56,24 @@ bash .ai-harness/.ai-standards/scripts/bootstrap_repo.sh
 ./ai status
 ```
 
+## Standards Upgrade
+
+业务仓库已经接入 Harness 后，推荐从业务仓库根目录执行：
+
+```bash
+bash .ai-harness/.ai-standards/scripts/update_business_standards.sh [tag-or-sha]
+```
+
+- 不传参数：更新 `.ai-harness/.ai-standards` 到 submodule 配置的远端跟踪版本。
+- 传入 `tag-or-sha`：拉取规范源 tag 后，将 submodule 锁定到指定 tag 或 commit SHA。
+
+脚本会执行 bootstrap 和 `./ai status`，但不会自动提交。确认无误后手工提交：
+
+```bash
+git add .ai-harness .github ai
+git commit -m "chore(standards): upgrade ai coding standards"
+```
+
 ## Advanced Script Usage
 
 底层脚本仍可单独调用：
@@ -100,6 +118,9 @@ bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
 
 - `init_business_repo.sh`
 - 从业务仓库根目录执行的一键初始化入口，负责添加规范源 submodule、运行 bootstrap，并验证 `./ai status`。
+
+- `update_business_standards.sh`
+- 从业务仓库根目录执行的规范升级入口，负责更新规范源 submodule、运行 bootstrap，并验证 `./ai status`。
 
 - `init_spec.sh`
 - 创建 `.ai-harness/specs/<spec-id>/` 并复制 spec 四件套。

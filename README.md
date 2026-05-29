@@ -38,6 +38,12 @@ Daily business repository commands:
 ./ai pr <spec-id> <task-id> main
 ```
 
+Upgrade standards in an already initialized business repository:
+
+```bash
+bash .ai-harness/.ai-standards/scripts/update_business_standards.sh [tag-or-sha]
+```
+
 ## Source Repository Structure
 
 - `AGENTS.md`: mandatory agent rules for this standards source repository.

@@ -247,6 +247,25 @@ git commit -m "chore(harness): setup ai coding harness"
 
 ## 6. 子模块升级操作
 
+推荐从业务仓库根目录执行：
+
+```bash
+bash .ai-harness/.ai-standards/scripts/update_business_standards.sh [tag-or-sha]
+```
+
+- 不传参数：更新到 submodule 配置的远端跟踪版本。
+- 传入 `tag-or-sha`：锁定到指定规范源 tag 或 commit SHA。
+- 脚本会执行 bootstrap 和 `./ai status`，但不会自动提交。
+
+确认无误后提交：
+
+```bash
+git add .ai-harness .github ai
+git commit -m "chore(standards): upgrade ai coding standards"
+```
+
+手工等价步骤用于排错或受限环境：
+
 ```bash
 git submodule update --remote .ai-harness/.ai-standards
 cd .ai-harness/.ai-standards && git checkout <tag-or-sha> && cd ../..
