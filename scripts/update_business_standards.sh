@@ -41,13 +41,13 @@ say "standards before: ${before_rev:-unknown}"
 
 if [[ -n "$TARGET_REF" ]]; then
   say "fetch standards refs"
-  git -C "$STANDARDS_DIR" fetch --tags origin
+  git -C "$STANDARDS_DIR" -c protocol.file.allow=always fetch --tags origin
 
   say "checkout standards ref: $TARGET_REF"
   git -C "$STANDARDS_DIR" checkout "$TARGET_REF"
 else
   say "update standards submodule from configured remote"
-  git submodule update --remote --init --recursive "$STANDARDS_DIR"
+  git -c protocol.file.allow=always submodule update --remote --init --recursive "$STANDARDS_DIR"
 fi
 
 after_rev="$(git -C "$STANDARDS_DIR" rev-parse --short HEAD 2>/dev/null || true)"
