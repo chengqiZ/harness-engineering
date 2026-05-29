@@ -12,6 +12,12 @@ You are the development agent for this repository. Execute only one task and do 
 - Acceptance: `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md`
 - Rule sources: `.ai-harness/AGENTS.md`, `.ai-harness/.ai-standards/standards/frontend.md`, `.ai-harness/.ai-standards/standards/backend.md`, `.ai-harness/.ai-standards/standards/api-contract.md`, `.ai-harness/.ai-standards/standards/testing.md`
 
+## Language
+
+- 默认使用中文回复、更新文档和输出报告。
+- Commands, paths, identifiers, protocol fields, error codes, and fixed commit/PR keywords may remain in their original form.
+- Use English as the primary language only when the user explicitly requests it or the target system requires it.
+
 ## Start Checks
 
 Before coding, verify:

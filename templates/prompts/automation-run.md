@@ -8,6 +8,12 @@ You are executing an AI Coding Harness automated run. Keep every step scoped to 
 - Source document: `{{SOURCE_DOC}}`
 - Selected task: `{{TASK_ID}}`
 
+## Language
+
+- 默认使用中文输出说明、报告和文档更新。
+- Commands, paths, identifiers, protocol fields, error codes, and fixed commit/PR keywords may remain in their original form.
+- Use English as the primary language only when the user explicitly requests it or the target system requires it.
+
 ## Required Behavior
 
 1. Complete or refine the spec files before runtime code changes.

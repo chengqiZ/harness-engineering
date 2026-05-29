@@ -18,6 +18,10 @@ Code standards reference:
 
 ## Required Outputs
 
+- 后续文档、模板、SOP、报告和面向用户的回复默认使用中文。
+- 保留代码标识符、命令、路径、协议字段、错误码、commit/PR 格式关键字等原文；引用英文资料时应给出中文解释或摘要。
+- 只有在用户明确要求英文、目标系统强制英文、或模板字段本身必须英文时，才使用英文作为主要表达语言。
+
 Research documents should be reusable and actionable. Prefer:
 - SOPs
 - templates

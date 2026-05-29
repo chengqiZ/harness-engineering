@@ -49,6 +49,7 @@ Daily business repository commands:
 ## Maintenance Rules
 
 - Follow `AGENTS.md` before changing this repository.
+- Use Chinese by default for future documents, templates, SOPs, reports, and user-facing replies; keep commands, paths, identifiers, protocol fields, error codes, and fixed PR/commit keywords in their original form.
 - Do not add source-repo maintenance records under top-level `specs/`; use `docs/TODO.md`, decision records, changelog notes, or PR/report evidence instead.
 - Business repositories should create execution specs under `.ai-harness/specs/<spec-id>/`.
 - Keep source-repo maintenance PRs scoped to one coherent maintenance topic.

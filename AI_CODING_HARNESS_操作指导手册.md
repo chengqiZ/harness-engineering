@@ -119,6 +119,8 @@ git commit -m "chore(harness): setup ai coding harness"
 
 ## 5. 可直接复制的提示词（重点）
 
+默认要求：后续文档、模板、SOP、报告和 AI 回复以中文为主；命令、路径、代码标识符、协议字段、错误码、commit/PR 固定格式可保留原文。
+
 ### 5.1 通用启动提示词（每个需求第一条）
 
 ```text
@@ -132,6 +134,8 @@ git commit -m "chore(harness): setup ai coding harness"
 - 冲突点
 - 采用的规则来源
 - 理由
+
+后续回复、文档和报告默认使用中文；命令、路径、代码标识符、协议字段、错误码、commit/PR 固定格式可保留原文。
 
 先不要写代码，先审阅 .ai-harness/specs/<spec-id>/01-requirements.md 并输出缺失项与歧义问题清单。
 ```

@@ -12,6 +12,12 @@ Read and follow these sources in order:
 
 If rules conflict, state the conflict, the chosen source, and the reason.
 
+## Language
+
+- 默认使用中文输出和维护文档。
+- Commands, paths, identifiers, protocol fields, error codes, and fixed commit/PR keywords may remain in their original form.
+- Use English as the primary language only when the user explicitly requests it or the target system requires it.
+
 ## Inputs
 
 - Spec ID: `{{SPEC_ID}}`
