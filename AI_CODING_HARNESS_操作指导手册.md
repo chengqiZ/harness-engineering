@@ -10,10 +10,20 @@
 
 建议先阅读：
 - 主方案：`AI_CODING_HARNESS_完整方案.md`
-- 首次验证 SOP：`docs/业务仓库首次验证SOP.md`
+- 业务仓库接入与执行 SOP：`docs/业务仓库接入与执行SOP.md`
 - 项目接入清单：`templates/project-onboarding-checklist.md`
 
 ## 2. 一次性初始化（新业务仓库）
+
+推荐从业务仓库根目录执行：
+
+```bash
+bash /path/to/ai-coding-standards/scripts/init_business_repo.sh <repo-url-of-ai-coding-standards>
+```
+
+该命令会添加 submodule、执行 bootstrap，并运行 `./ai status`。
+
+手工等价步骤用于排错或受限环境：
 
 ```bash
 git submodule add <repo-url-of-ai-coding-standards> .ai-harness/.ai-standards
@@ -93,6 +103,19 @@ git commit -m "chore(harness): setup ai coding harness"
 6. AI 先拆任务，后开发
 7. 一次只做一个 `task-id`
 8. 每次提交附验证证据
+
+## 4.1 规范源库维护记录
+
+当前仓库维护自身 standards、docs、templates 时，不在顶层 `specs/` 下沉淀每次维护任务。业务仓库 spec 骨架只保留在 `templates/specs/`。
+
+源库维护事项通过以下资料留痕：
+
+- `docs/TODO.md`
+- 决策记录或 SOP 更新
+- changelog 说明
+- PR/report 中的验证证据
+
+业务仓库执行产物仍使用 `.ai-harness/specs/<spec-id>/` 四件套。
 
 ## 5. 可直接复制的提示词（重点）
 
@@ -261,8 +284,8 @@ bash .ai-harness/.ai-standards/scripts/prepare_spec_prompt.sh <spec-id> <source-
 
 当你维护当前规范源仓库时，建议同步维护以下资料：
 - `templates/*.md`
-- `examples/specs/*`
-- `docs/业务仓库首次验证SOP.md`
+- `templates/specs/`
+- `docs/业务仓库接入与执行SOP.md`
 - `docs/changelog/README.md`
 - `scripts/*.sh`
 - `scripts/README.md`

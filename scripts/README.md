@@ -27,6 +27,16 @@
 
 ## Bootstrap
 
+推荐从业务仓库根目录执行一条初始化命令：
+
+```bash
+bash /path/to/ai-coding-standards/scripts/init_business_repo.sh <repo-url-of-ai-coding-standards>
+```
+
+该命令会添加 submodule、执行 bootstrap，并运行 `./ai status` 验证入口。
+
+手动等价步骤如下：
+
 1. 添加规范源仓库 submodule：
 
 ```bash
@@ -88,6 +98,9 @@ bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
 - `bootstrap_repo.sh`
 - 初始化 `.ai-harness/`、业务仓库 `AGENTS.md`、PR 模板、changelog 目录和根目录 `./ai`。
 
+- `init_business_repo.sh`
+- 从业务仓库根目录执行的一键初始化入口，负责添加规范源 submodule、运行 bootstrap，并验证 `./ai status`。
+
 - `init_spec.sh`
 - 创建 `.ai-harness/specs/<spec-id>/` 并复制 spec 四件套。
 
@@ -111,22 +124,6 @@ bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
 
 - `lib/codex_runner.sh`
 - 封装 `codex exec` 调用和日志路径。
-
-- `verify_first_onboarding.sh`
-- 聚合验证业务仓库首次接入链路，覆盖 submodule、bootstrap、spec 初始化、prompt 生成和 spec 检查。该脚本用于临时验收引导，不属于业务 SOP。
-
-## Verification Helper
-
-在 WSL 中验证某个业务仓库首次接入流程：
-
-```bash
-bash /path/to/ai-coding-standards/scripts/verify_first_onboarding.sh \
-  /path/to/business-repo \
-  /path/to/ai-coding-standards \
-  demo-first-flow
-```
-
-如果规范源库使用本地路径，脚本会使用 `protocol.file.allow=always` 处理本地 submodule 添加。
 
 ## Notes
 

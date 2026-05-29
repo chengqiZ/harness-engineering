@@ -11,6 +11,7 @@ Default stack baseline: Vue (Vitest + Vue Test Utils), Java (JUnit 5 + Spring Bo
 - Bug fix requires at least one regression test.
 - Tests should be deterministic and isolated.
 - If tests cannot run, provide blocker, manual steps, expected results.
+- Complex test setup, non-obvious assertions, regression cases, and mocked boundary behavior must include comments or test names that explain the intent being verified.
 
 ## Test Strategy
 
@@ -40,6 +41,7 @@ Default stack baseline: Vue (Vitest + Vue Test Utils), Java (JUnit 5 + Spring Bo
 - Flaky tests must be fixed or quarantined with owner and due date.
 - No merge when critical-path tests are failing.
 - High-risk changes (auth/billing/data migration) require at least one integration test.
+- Tests covering subtle business rules must document the scenario and expected invariant.
 
 ## Verification Output Format
 

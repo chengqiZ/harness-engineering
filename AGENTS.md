@@ -37,8 +37,10 @@ For analysis docs, use:
 ## Execution Rules (Mandatory)
 
 ### Workflow Gate
-- No code change before `specs/<spec-id>/01-requirements.md` and `03-tasks.md` exist.
-- One PR maps to exactly one `task-id`.
+- This source repository does not use top-level `specs/` as its own execution log; reusable spec skeletons live in `templates/specs/`.
+- For business repository work, no code change before `.ai-harness/specs/<spec-id>/01-requirements.md` and `03-tasks.md` exist.
+- For this source repository, keep changes scoped to the user-approved maintenance task and document validation in the final report.
+- Business repository PRs map to exactly one `task-id`; source repository maintenance PRs should keep one coherent maintenance topic.
 - Out-of-scope refactor is not allowed without explicit approval.
 - For FE/BE coding conventions and API constraints, follow `standards/*.md`.
 

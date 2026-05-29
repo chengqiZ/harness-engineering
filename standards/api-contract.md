@@ -13,12 +13,14 @@ Default protocol style: REST JSON over HTTP for Vue + Java services.
 - Standardize error model (code, message, details, trace id).
 - Document auth requirements and rate limits where applicable.
 - Keep timestamp/timezone fields explicit (ISO-8601 with timezone).
+- Add detailed notes for non-obvious fields, validation rules, error semantics, compatibility constraints, and client/server assumptions.
 
 ## Contract Change Policy
 
 - Non-breaking change: additive fields with backward compatibility.
 - Breaking change: requires version bump or migration plan.
 - Deprecation must include timeline and fallback path.
+- Compatibility notes must explain the reason, affected clients, rollout expectation, and rollback/fallback behavior.
 
 ## Validation
 

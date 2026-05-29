@@ -30,9 +30,8 @@
 3. 资料角色划分
 - 规范源仓库提供：
   - 核心规则：`AGENTS.md`、`standards/*`
-  - 基础模板：`templates/specs/*`
+  - Spec 模板：`templates/specs/*`
   - 执行模板：`templates/*.md`
-  - 示例：`examples/specs/*`
   - SOP：`docs/*.md`
 - 业务仓库负责：
   - 引入 `/.ai-harness/.ai-standards`
@@ -54,8 +53,11 @@
 ```text
 ai-coding-standards/                     # 规范源仓库
   AGENTS.md
+  README.md
   standards/
   templates/
+  scripts/
+  docs/
 
 project-a/                               # 业务仓库
   .github/
@@ -76,6 +78,16 @@ project-a/                               # 业务仓库
 ## 4. Git Submodule 落地流程
 
 ### 4.1 首次接入
+
+推荐从业务仓库根目录执行一键初始化：
+
+```bash
+bash /path/to/ai-coding-standards/scripts/init_business_repo.sh <repo-url-of-ai-coding-standards>
+```
+
+该命令会添加规范源 submodule、执行 bootstrap，并运行 `./ai status` 验证入口。
+
+手工等价步骤用于排错或受限环境：
 
 ```bash
 git submodule add <repo-url-of-ai-coding-standards> .ai-harness/.ai-standards
@@ -103,14 +115,25 @@ git commit -m "chore(standards): upgrade ai standards to v1.2.0"
 
 ## 5. 开发流程（Spec 驱动）
 
-1. 运行 `bash .ai-harness/.ai-standards/scripts/init_spec.sh <spec-id>`
-2. 运行 `bash .ai-harness/.ai-standards/scripts/prepare_spec_prompt.sh <spec-id> <source-doc>`
-3. 将输出提示词交给 AI，补齐 `01-requirements.md`、`02-design.md`、`03-tasks.md`、`04-acceptance.md`
-4. 人工确认 spec 和待确认问题
-5. 运行 `bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>`
-6. 一次只实现一个 `task-id`
-7. 更新 `04-acceptance.md`
-8. PR 合并
+业务仓库日常优先使用：
+
+```bash
+./ai run <spec-id> <source-doc>
+```
+
+分步排错时使用：
+
+1. 运行 `./ai spec <spec-id> <source-doc>`
+2. 运行 `./ai next <spec-id>`
+3. 运行 `./ai work <spec-id> <task-id>`
+4. 运行 `./ai pr <spec-id> <task-id> main`
+5. 一次只实现一个 `task-id`
+6. 更新 `04-acceptance.md`
+7. PR 合并
+
+底层脚本 `init_spec.sh`、`prepare_spec_prompt.sh`、`check_spec.sh` 保留为高级/排错入口。
+
+规范源仓库自身不使用顶层 `specs/` 作为维护过程记录；业务仓库 spec 骨架只保留在 `templates/specs/`。源库维护事项通过 `docs/TODO.md`、决策记录、changelog 或 PR/report 证据留痕。业务仓库的执行产物仍统一放在 `.ai-harness/specs/<spec-id>/`。
 
 ## 6. 规范执行边界
 
@@ -158,14 +181,14 @@ git commit -m "chore(standards): upgrade ai standards to v1.2.0"
 
 ## 10. 附加资料
 
-- 业务仓库首次验证 SOP：`docs/业务仓库首次验证SOP.md`
+- 业务仓库接入与执行 SOP：`docs/业务仓库接入与执行SOP.md`
 - 项目接入检查清单：`templates/project-onboarding-checklist.md`
 - 业务仓库 AGENTS 模板：`templates/business-repo-AGENTS.md`
 - PR 模板：`templates/pull_request_template.md`
 - Changelog 模板：`templates/changelog-entry.md`
 - 规范升级评估模板：`templates/standards-upgrade-review.md`
 - 例外规则模板：`templates/exception-rule.md`
-- 完整示例 spec：`examples/specs/demo-profile-edit/`
+- Spec 模板：`templates/specs/`
 - Prompt 模板：`templates/prompts/spec-preparation.md`
-- 自动化脚本：`scripts/bootstrap_repo.sh`、`scripts/init_spec.sh`、`scripts/prepare_spec_prompt.sh`、`scripts/check_spec.sh`
+- 自动化脚本：`scripts/init_business_repo.sh`、`scripts/bootstrap_repo.sh`、`scripts/init_spec.sh`、`scripts/prepare_spec_prompt.sh`、`scripts/prepare_task_prompt.sh`、`scripts/prepare_pr_prompt.sh`、`scripts/check_spec.sh`
 - 脚本说明：`scripts/README.md`
