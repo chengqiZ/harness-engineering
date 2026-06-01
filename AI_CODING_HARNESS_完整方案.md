@@ -196,12 +196,25 @@ git commit -m "chore(standards): upgrade ai standards to v1.2.0"
 - 命令、路径、代码标识符、协议字段、错误码、commit/PR 固定格式可保留原文。
 - 如用户明确要求英文或目标系统字段强制英文，可以局部使用英文，但应尽量给出中文解释。
 
+执行模式：
+- `codex-managed`：默认模式，适用于业务仓库 `./ai` 入口调度 Codex。AI 可在仓库约束内读取文件、修改文件、运行命令和执行验证。
+- `portable-managed`：适用于 Claude Code、OpenClaw、Gemini CLI、Copilot CLI 或内部 AI 程序等具备仓库读写能力的工具。AI 开始时只需简要确认可读写仓库和运行必要验证；若能力满足任务要求，直接继续。只有能力不足、高风险操作、破坏性操作、规则冲突或缺少关键输入时，才暂停等待人工确认。
+- `prompt-only`：适用于纯对话工具。AI 不修改文件、不运行命令、不声称已验证，只输出可执行步骤、patch、检查清单、评审意见或 PR 文案。
+
+其他 AI 程序串行执行 task 时，使用 `templates/prompts/serial-task-pipeline.md`。该模板只在开头集中声明 `Spec ID`、`Source document` 和 `Target branch`，正文按“当前 spec / 当前 task / 目标分支”执行，避免人工反复替换占位符。`target-branch` 可省略，默认使用当前所在 git 分支；`source-doc` 是普通业务需求文档，可以是 PRD、方案说明、缺陷描述、验收口径或用户故事，spec 已存在时可省略。
+
+串行 task 边界：
+- 允许按 `03-tasks.md` 的依赖顺序连续推进多个 task，但每个 `task-id` 必须独立完成实现、验证、`04-acceptance.md` 更新、PR 材料和人工继续确认。
+- 一个 PR 只对应一个 `task-id`。
+- 未经明确授权，不得自动继续下一个 task。
+- 即使授权自动继续，也只允许继续 `S` 级、低风险、依赖已满足、验证已通过且工作区状态清晰的 task。
+
 ## 9. 验收标准
 
 - 至少 1 个业务仓库完成 submodule 接入
 - 至少 1 个真实需求完成 spec->task->code->test->acceptance 闭环
 - 至少 1 次规范升级演练（含回滚）
-- 团队成员可复用同一套提示词完成任务推进
+- 团队成员可复用同一套提示词完成任务推进，包括 Codex 的 `codex-managed` 流程和其他 AI 程序的 `portable-managed` 流程
 
 ## 10. 附加资料
 
@@ -214,5 +227,6 @@ git commit -m "chore(standards): upgrade ai standards to v1.2.0"
 - 例外规则模板：`templates/exception-rule.md`
 - Spec 模板：`templates/specs/`
 - Prompt 模板：`templates/prompts/spec-preparation.md`
-- 自动化脚本：`scripts/init_business_repo.sh`、`scripts/bootstrap_repo.sh`、`scripts/init_spec.sh`、`scripts/prepare_spec_prompt.sh`、`scripts/prepare_task_prompt.sh`、`scripts/prepare_pr_prompt.sh`、`scripts/check_spec.sh`
+- 其他 AI 程序串行 task 模板：`templates/prompts/serial-task-pipeline.md`
+- 自动化脚本：`scripts/init_business_repo.sh`、`scripts/bootstrap_repo.sh`、`scripts/init_spec.sh`、`scripts/prepare_spec_prompt.sh`、`scripts/prepare_task_prompt.sh`、`scripts/prepare_pr_prompt.sh`、`scripts/prepare_serial_task_prompt.sh`、`scripts/check_spec.sh`
 - 脚本说明：`scripts/README.md`

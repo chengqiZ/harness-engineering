@@ -89,6 +89,59 @@ git commit -m "chore(harness): setup ai coding harness"
 - `./ai pr` 提交和推送前必须暂停，展示 diff 摘要、测试证据、风险、回滚方案、commit message 和 MR 描述。
 - v1 不调用 GitLab API 创建 MR，只生成可粘贴的 MR 材料。
 
+## 3.1 其他 AI 程序执行流程
+
+如果使用 Claude Code、OpenClaw、Gemini CLI、Copilot CLI 或内部 AI 程序执行业务仓库任务，不要让这些工具调用 `./ai run`、`./ai spec`、`./ai work`、`./ai pr`。这些命令是 Codex 调度入口，会再次调用 Codex。
+
+其他具备仓库读写能力的 AI 程序使用：
+
+```text
+.ai-harness/.ai-standards/templates/prompts/serial-task-pipeline.md
+```
+
+执行模式：
+
+```text
+Execution Mode: portable-managed
+```
+
+使用方式：
+
+1. 在业务仓库根目录打开对应 AI 工具。
+2. 要求 AI 读取 `serial-task-pipeline.md`。
+3. 提供模板输入：
+   - `Spec ID`
+   - `Source document`，如果 spec 已存在可留空或说明“继续当前 spec”
+   - `Target branch`
+4. AI 先完成 `Startup Checks`。
+5. 如果 spec 不完整，先创建或完善 spec 四件套，不写业务代码。
+6. 如果 spec 已可执行，按 `03-tasks.md` 依赖顺序一次执行一个 `task-id`。
+7. 每个 `task-id` 完成后必须暂停，输出测试证据、风险、回滚方案、PR 材料和 next ready task，等待人工确认是否继续。
+
+**也可以先从业务仓库根目录生成已替换占位符的提示词**，再复制给其他 AI 程序：
+
+```bash
+bash .ai-harness/.ai-standards/scripts/prepare_serial_task_prompt.sh <spec-id> [source-doc] [target-branch]
+```
+
+`target-branch` 可省略，默认使用当前所在 git 分支。`source-doc` 是普通业务需求文档，可以是 PRD、方案说明、缺陷描述、验收口径或用户故事；如果 spec 已存在，也可以省略 `source-doc`，让 AI 继续当前 spec。
+
+可复制启动语：
+
+```text
+请读取并使用 .ai-harness/.ai-standards/templates/prompts/serial-task-pipeline.md。
+
+模板输入：
+- Spec ID: <spec-id>
+- Source document: <source-doc 或留空>
+- Target branch: <target-branch 或当前所在分支>
+
+Execution Mode 使用 portable-managed。
+不要执行 ./ai run、./ai spec、./ai work、./ai pr。
+请先完成 Startup Checks，然后按当前 spec 的 03-tasks.md 依赖顺序串行执行 task。
+每完成一个 task-id 后暂停，输出验证证据、风险、回滚方案、PR 材料和 next ready task，等待我确认是否继续。
+```
+
 ## 4. 高级/排错流程：逐脚本使用
 
 1. 运行 `bash .ai-harness/.ai-standards/scripts/init_spec.sh <spec-id>`

@@ -25,6 +25,14 @@
 
 `./ai` 会自动调用 `codex exec -C <business-repo> --sandbox workspace-write`，并将 approval policy 设为 `never`（按本机 Codex CLI 支持情况选择 `--ask-for-approval never` 或等价配置）。它不会使用危险的 sandbox 绕过参数，也不会直接调用 GitLab API 创建 MR。
 
+如果使用 Claude Code、OpenClaw、Gemini CLI、Copilot CLI 或内部 AI 程序，不要让这些工具调用 `./ai run/spec/work/pr`，因为这些命令会调度 Codex。其他具备仓库读写能力的 AI 程序应读取：
+
+```text
+.ai-harness/.ai-standards/templates/prompts/serial-task-pipeline.md
+```
+
+并使用 `Execution Mode: portable-managed`。该模式允许其他 AI 程序按 `03-tasks.md` 依赖顺序串行执行 task，但每个 `task-id` 必须独立完成验证、acceptance 更新和 PR 材料。
+
 ## Bootstrap
 
 推荐从业务仓库根目录执行一条初始化命令：
@@ -102,7 +110,15 @@ bash .ai-harness/.ai-standards/scripts/prepare_task_prompt.sh <spec-id> <task-id
 bash .ai-harness/.ai-standards/scripts/prepare_pr_prompt.sh <spec-id> <task-id> <target-branch> <feature-branch>
 ```
 
-5. 检查 spec 是否仍有明显未填写内容：
+5. 为其他 AI 程序生成串行 task 执行提示词：
+
+```bash
+bash .ai-harness/.ai-standards/scripts/prepare_serial_task_prompt.sh <spec-id> [source-doc] [target-branch]
+```
+
+该脚本只渲染 `serial-task-pipeline.md`，不会调用 Codex。`target-branch` 可省略，默认使用当前所在 git 分支；`source-doc` 可省略，表示基于已有 spec 继续执行。`source-doc` 是普通业务需求文档，可以是 PRD、方案说明、缺陷描述、验收口径或用户故事。
+
+6. 检查 spec 是否仍有明显未填写内容：
 
 ```bash
 bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
@@ -134,6 +150,12 @@ bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
 - `prepare_pr_prompt.sh`
 - 输出可复制给其他 AI 程序的 PR 准备提示词。
 
+- `prepare_serial_task_prompt.sh`
+- 输出可复制给其他具备仓库读写能力的 AI 程序的串行 task 执行提示词，不调用 Codex。
+
+- `templates/prompts/serial-task-pipeline.md`
+- 面向其他具备仓库读写能力的 AI 程序，用于在一个 spec 下按依赖顺序串行执行 task，同时保持一个 PR 对应一个 `task-id`。
+
 - `check_spec.sh`
 - 检查 spec 四件套是否存在，以及是否仍残留模板占位内容。
 
@@ -151,6 +173,6 @@ bash .ai-harness/.ai-standards/scripts/check_spec.sh <spec-id>
 - `./ai work` 开始前会将已有脏工作区保存为带时间戳的 named stash，并在输出中给出恢复提示；目标 spec 文件的未提交修改会保留在工作区。
 - `./ai pr` 会在提交和推送前暂停，要求人工确认 diff、测试证据、风险、回滚方案、commit message 和 MR 描述。
 - 当前 v1 不自动创建 GitLab MR；只生成 MR 材料和推送分支。
-- `prepare_spec_prompt.sh`、`prepare_task_prompt.sh` 和 `prepare_pr_prompt.sh` 只生成提示词，适合 prompt-only 或排错场景。
+- `prepare_spec_prompt.sh`、`prepare_task_prompt.sh`、`prepare_pr_prompt.sh` 和 `prepare_serial_task_prompt.sh` 只生成提示词，适合 portable-managed、prompt-only 或排错场景。
 - `check_spec.sh` 是轻量静态检查，不等价于人工评审或业务验收。
 - 这些脚本加在规范源仓库后，业务仓库可以直接通过 `.ai-harness/.ai-standards/scripts/*.sh` 调用；前提是业务仓库的 submodule 已更新到包含这些脚本的版本。

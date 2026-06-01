@@ -13,6 +13,31 @@ This directory stores reusable prompts for the AI-assisted delivery workflow.
 - `pr-preparation.md`
   - Prepare a pull request summary and review materials after a single task is complete.
 
+- `serial-task-pipeline.md`
+  - Guide Claude Code, OpenClaw, or another repository-capable AI tool to execute tasks under one spec in dependency order, while keeping every `task-id` as an independent validation and PR boundary.
+
+## Execution Modes
+
+- `codex-managed`
+  - Default mode for `./ai` automation. The business repo entrypoint invokes Codex and uses these templates as execution constraints.
+
+- `portable-managed`
+  - Use this mode when copying prompts to another AI tool that can read and write files in the repository, such as Claude Code, OpenClaw, Gemini CLI, Copilot CLI, or an internal AI program.
+  - The AI tool should briefly confirm repository read/write and validation capability, then proceed. It should pause only for capability gaps, high-risk changes, destructive actions, rule conflicts, or missing required input.
+
+- `prompt-only`
+  - Use this mode for chat-only tools. The AI must not claim it changed files or ran commands; it should produce patches, checklists, review findings, or PR text only.
+
+## Scenario Routing
+
+| Scenario | Recommended template | Default mode |
+| --- | --- | --- |
+| Create or refine spec files from a source document | `spec-preparation.md` | `codex-managed` |
+| Develop one task only | `task-development.md` | `codex-managed` |
+| Prepare PR material for one completed task | `pr-preparation.md` | `codex-managed` |
+| Run a Codex-managed automation chain | `automation-run.md` | `codex-managed` |
+| Let another repository-capable AI execute tasks in order | `serial-task-pipeline.md` | `portable-managed` |
+
 ## Placement Rule
 
 - Put reusable prompt text in `templates/prompts/`.
