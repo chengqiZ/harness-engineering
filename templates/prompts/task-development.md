@@ -25,6 +25,7 @@ Before coding, verify:
 - `{{TASK_ID}}` is not already marked done.
 - Any dependency listed for `{{TASK_ID}}` is complete.
 - If complexity is `M` or `L`, `.ai-harness/specs/{{SPEC_ID}}/02-design.md` is available and usable.
+- Read the applicable coding standards before editing, with special attention to comment requirements for classes/modules, methods, fields/state, branches, edge cases, and risk-sensitive logic.
 
 ## Execution Rules
 
@@ -39,17 +40,21 @@ Before coding, verify:
 3. Do not add functionality not declared in `.ai-harness/specs/{{SPEC_ID}}/03-tasks.md`.
 4. Do not do opportunistic refactors. If you find an issue outside scope that must be addressed, list it separately before changing it.
 5. If behavior changes, add tests. If this is a bug fix, add a regression test.
-6. After implementation, run relevant validation commands and report:
+6. During implementation, add meaningful comments where needed for classes/modules, public methods, important fields/state, non-obvious branches, edge cases, external assumptions, transactional constraints, and risk-sensitive logic.
+7. Comments must explain responsibility, intent, business meaning, constraints, or invariants; do not add comments that only restate obvious syntax.
+8. Before final output, review the changed code and confirm whether comment-required code paths were found and annotated.
+9. After implementation, run relevant validation commands and report:
    - executed commands
    - pass/fail summary
    - blocker details, if any
-7. Update `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md` with task-related test evidence, risks, rollback plan, and decision.
-8. Produce final output with:
+10. Update `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md` with task-related test evidence, risks, rollback plan, comment review result, and decision.
+11. Produce final output with:
    - change summary
    - changed files
    - test results
    - risks
    - rollback method
+   - comment review result
    - suggested commit message in format `<type>(<scope>): <summary>`
 
 ## Working Style

@@ -11,7 +11,8 @@ Default stack baseline: Vue (Vitest + Vue Test Utils), Java (JUnit 5 + Spring Bo
 - Bug fix requires at least one regression test.
 - Tests should be deterministic and isolated.
 - If tests cannot run, provide blocker, manual steps, expected results.
-- Complex test setup, non-obvious assertions, regression cases, and mocked boundary behavior must include comments or test names that explain the intent being verified.
+- Test files, fixtures, helper methods, complex setup, non-obvious assertions, regression cases, and mocked boundary behavior must include comments or test names that explain the intent being verified.
+- Avoid comments that only restate test syntax or obvious arrange/act/assert structure.
 
 ## Test Strategy
 

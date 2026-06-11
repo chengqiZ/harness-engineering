@@ -15,6 +15,11 @@
 - [ ] Security constraints met
 - [ ] Logging/observability checks passed
 
+## Code Quality Acceptance
+
+- [ ] Classes/modules, public methods, important fields/state, complex branches, and risk-sensitive logic have meaningful comments where needed
+- Comment review result:
+
 ## Testing Evidence
 
 - Commands executed:

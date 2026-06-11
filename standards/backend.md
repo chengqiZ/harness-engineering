@@ -12,7 +12,8 @@ Default stack: Java 17+ + Spring Boot + MySQL 8.
 - Do not mix unrelated responsibilities in one module.
 - Keep functions deterministic where possible; isolate side effects.
 - All behavior changes must include tests.
-- Add detailed comments for complex business rules, branching decisions, external integration assumptions, transactional constraints, and risk-sensitive logic; comments should explain why the code exists and what must not be broken.
+- Add meaningful comments where needed for classes/modules, public methods, important fields, branching decisions, external integration assumptions, transactional constraints, and risk-sensitive logic; comments should explain purpose, intent, business meaning, and constraints.
+- Avoid comments that only repeat obvious syntax, trivial getters/setters, or simple assignments.
 
 ## Data And Persistence
 
@@ -52,6 +53,6 @@ Default stack: Java 17+ + Spring Boot + MySQL 8.
 - [ ] Migration/rollback considered (if data model changed)
 - [ ] External calls have timeout/retry strategy
 - [ ] Structured logging used without sensitive data
-- [ ] Complex logic, business rules, and risk-sensitive paths have detailed comments
+- [ ] Classes/modules, public methods, important fields, complex branches, and risk-sensitive paths have meaningful comments where needed
 - [ ] Backend tests updated for behavior change
 - [ ] Transaction and migration impact are explicitly reviewed

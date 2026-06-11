@@ -74,9 +74,11 @@ Mode rules:
 2. 每个 `task-id` 必须独立完成闭环：
    - 读取该 task 的 `Purpose`、`Inputs`、`Changes`、`Validation`、`Done`、`Complexity`、`Depends On`
    - 只实现该 `task-id` 范围
+   - 为类/模块、公开方法、重要字段/状态、复杂条件分支、边界处理、外部假设和风险逻辑补充必要注释
+   - 注释必须解释职责、意图、业务含义、约束或不变量，不要只复述显而易见的语法
    - 运行相关验证命令
-   - 更新 `04-acceptance.md`，记录测试证据、风险、回滚方案和验收结论
-   - 输出 changed files、test evidence、risks、rollback、pending items
+   - 更新 `04-acceptance.md`，记录测试证据、风险、回滚方案、comment review result 和验收结论
+   - 输出 changed files、test evidence、risks、rollback、comment review result、pending items
    - 准备 PR 材料和建议 commit message
 3. 完成一个 `task-id` 后必须暂停，输出当前状态，并等待人工确认是否继续下一个 task。
 4. 如果人工明确回复“继续下一个 task”，再按依赖顺序选择下一个 ready task。
@@ -116,6 +118,7 @@ Mode rules:
 - test evidence
 - risks
 - rollback plan
+- comment review result
 - pending items
 - suggested commit message
 - PR description markdown

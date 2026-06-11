@@ -13,7 +13,8 @@ Default stack: Vue 3 + TypeScript + Pinia + Vue Router.
 - Separate view logic from data fetching side effects.
 - Handle loading, empty, error, and success states explicitly.
 - Avoid hardcoded strings for user-facing copy when i18n exists.
-- Add detailed comments for complex interaction logic, non-obvious state transitions, edge-case handling, and business rules; comments should explain intent and constraints, not restate obvious syntax.
+- Add meaningful comments where needed for components, composables, public functions, important state, non-obvious state transitions, edge-case handling, and business rules; comments should explain intent, constraints, and UI/business meaning.
+- Avoid comments that only restate obvious syntax, simple computed values, or trivial event forwarding.
 - Accessibility baseline: semantic HTML, keyboard reachable controls, labeled inputs.
 
 ## Styling
@@ -57,6 +58,6 @@ src/
 - [ ] Existing component/style patterns reused
 - [ ] Accessibility baseline checked
 - [ ] Responsive behavior verified
-- [ ] Complex logic and business rules have detailed comments
+- [ ] Components, functions, state, complex branches, and business rules have meaningful comments where needed
 - [ ] Frontend tests updated for behavior change
 - [ ] Vue store and service boundaries are respected

@@ -47,7 +47,7 @@
 - `M/L` 任务、DB migration、auth、权限、billing、风险逻辑不得直接自动推进，必须先人工确认设计和影响范围。
 - `./ai work` 会进入开发动作，执行前应确认工作区没有不应混入的改动。
 - `./ai pr` 会整理提交和推送材料，执行前应确认测试证据、风险、回滚方案已经明确。
-- 注释、测试、API 契约和异常处理要求以 `.ai-harness/.ai-standards/standards/*.md` 为准。
+- 注释、测试、API 契约和异常处理要求以 `.ai-harness/.ai-standards/standards/*.md` 为准；注释要求覆盖类/模块、方法、属性/状态、条件分支、边界处理和风险逻辑，不只针对复杂需求。
 
 ## 推荐做法
 
@@ -133,7 +133,7 @@ docs/requirements/<spec-id>.md
 - 只实现当前 `task-id`。
 - 不做无关重构。
 - 行为变化必须补测试。
-- 复杂逻辑、业务规则、边界条件和风险逻辑必须补详细注释。
+- 类/模块、方法、属性/状态、条件分支、边界处理、业务规则和风险逻辑必须按需补充有意义注释。
 
 ### 5. 准备 PR 和验收
 
@@ -212,6 +212,7 @@ Execution Mode 使用 portable-managed。
 - 当前 PR 只对应 1 个 `task-id`。
 - 非 Codex 工具执行时，使用 `serial-task-pipeline.md`，且没有调用 Codex 调度入口。
 - 行为变化有测试证据。
+- 类/模块、方法、属性/状态、条件分支、边界处理和风险逻辑有明确的 comment review result。
 - `04-acceptance.md` 有明确 YES/NO 结论。
 - PR/report 包含风险、回滚方案和 pending items。
 - `.ai-harness/docs/changelog/` 留下变更记录。

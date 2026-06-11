@@ -23,6 +23,11 @@
 - Pass/fail summary:
 - Blockers or failed checks:
 
+## Code Quality
+
+- Comment review result:
+- Missing comment risks:
+
 ## Risks
 
 - Risk 1:

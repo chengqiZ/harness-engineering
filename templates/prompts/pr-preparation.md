@@ -28,6 +28,7 @@ You are preparing a pull request for a completed single task. This prompt is for
    - behavior changes have tests
    - bug fixes have regression tests
    - risks and rollback plan are documented
+   - meaningful comments exist where needed for classes/modules, methods, fields/state, branches, edge cases, and risk-sensitive paths
 3. Check whether `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md` has been updated with actual test evidence and the current acceptance decision. If not, list the gap.
 
 ## Required Output
@@ -39,6 +40,7 @@ Produce a PR-ready summary that includes:
 - test evidence
 - risks
 - rollback plan
+- comment review result
 - pending items
 
 Also report validation details:
