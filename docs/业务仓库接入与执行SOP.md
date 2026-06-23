@@ -205,6 +205,70 @@ Execution Mode 使用 portable-managed。
 
 如果 spec 已存在，AI 程序应直接读取当前 spec，选择依赖满足的 ready task。除非人工明确授权“自动继续 S 级 task”，否则每完成一个 `task-id` 都必须暂停。
 
+## 清空上下文后的启动提示词
+
+### Codex 场景
+
+新开 AI 会话后，可以直接复制这段：
+
+```text
+请按以下优先级读取并遵循规范：
+1) 当前会话约束
+2) .ai-harness/AGENTS.md
+3) .ai-harness/.ai-standards/AGENTS.md
+4) .ai-harness/.ai-standards/standards/*.md
+
+我要继续执行业务仓库 AI Coding Harness 流程。
+请先运行 ./ai status，确认当前仓库状态。
+然后按分步流程执行：
+1. ./ai spec <spec-id> <source-doc>
+2. ./ai next <spec-id>
+3. ./ai work <spec-id> <task-id>
+4. ./ai pr <spec-id> <task-id> main
+
+每一步执行后请说明：
+- 执行了什么命令
+- 结果是否通过
+- 下一步是什么
+- 如果失败，失败原因和需要我确认的事项
+```
+
+### 其他 AI 程序场景（快捷方式）
+
+一键生成完整提示词，直接复制给 Claude Code 等工具：
+
+```bash
+bash .ai-harness/.ai-standards/scripts/prepare_serial_task_prompt.sh <spec-id> [source-doc] [target-branch]
+```
+
+常见用法：
+
+```bash
+# 新需求：从需求文档生成 spec 并串行执行
+bash .ai-harness/.ai-standards/scripts/prepare_serial_task_prompt.sh demo-feature docs/requirements/demo-feature.md
+
+# 已有 spec：继续串行执行下一个 task
+bash .ai-harness/.ai-standards/scripts/prepare_serial_task_prompt.sh demo-feature
+```
+
+### 其他 AI 程序场景（手工方式）
+
+如果不方便运行脚本，可以复制这段：
+
+```text
+请读取并使用 .ai-harness/.ai-standards/templates/prompts/serial-task-pipeline.md。
+
+模板输入：
+- Spec ID: <spec-id>
+- Source document: <source-doc 或留空>
+- Target branch: <target-branch 或当前所在分支>
+
+Execution Mode 使用 portable-managed。
+不要执行 ./ai run、./ai spec、./ai work、./ai pr。
+请先完成 Startup Checks，然后按当前 spec 的 03-tasks.md 依赖顺序串行执行 task。
+每完成一个 task-id 后暂停，输出验证证据、风险、回滚方案、PR 材料和 next ready task，等待我确认是否继续。
+```
+
 ## 验收标准
 
 - `./ai status` 可以正常输出仓库和规范源信息。
