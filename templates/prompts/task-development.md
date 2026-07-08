@@ -50,19 +50,20 @@ Before coding, verify:
 6. During implementation, add meaningful comments where needed for classes/modules, public methods, important fields/state, non-obvious branches, edge cases, external assumptions, transactional constraints, and risk-sensitive logic.
 7. Comments must explain responsibility, intent, business meaning, constraints, or invariants; do not add comments that only restate obvious syntax.
 8. Before final output, review the changed code and confirm whether comment-required code paths were found and annotated.
-9. After implementation, run relevant validation commands and report:
-   - executed commands
-   - pass/fail summary
-   - blocker details, if any
-10. Update `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md` with task-related test evidence, risks, rollback plan, comment review result, and decision.
-11. Produce final output with:
-   - change summary
-   - changed files
-   - test results
-   - risks
-   - rollback method
-   - comment review result
-   - suggested commit message in format `<type>(<scope>): <summary>`
+9. Run the compile/build smoke test first (e.g., `mvn compile`, `gradle classes`). If it fails, stop and report the failure before running tests.
+10. Run relevant validation commands and report:
+    - executed commands
+    - pass/fail summary
+    - blocker details, if any
+11. Update `.ai-harness/specs/{{SPEC_ID}}/04-acceptance.md` with task-related test evidence, risks, rollback plan, comment review result, and decision.
+12. Produce final output with:
+    - change summary
+    - changed files
+    - test results
+    - risks
+    - rollback method
+    - comment review result
+    - suggested commit message in format `<type>(<scope>): <summary>`
 
 ## Working Style
 

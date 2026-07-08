@@ -12,6 +12,7 @@ Default stack: Java 17+ + Spring Boot + MySQL 8.
 - Do not mix unrelated responsibilities in one module.
 - Keep functions deterministic where possible; isolate side effects.
 - All behavior changes must include tests.
+- Java changes must pass a compile step (e.g., `mvn compile`, `mvn test-compile`, `gradle classes`, or `gradle compileJava`) before running tests or marking the task complete.
 - Add meaningful comments where needed for classes/modules, public methods, important fields, branching decisions, external integration assumptions, transactional constraints, and risk-sensitive logic; comments should explain purpose, intent, business meaning, and constraints.
 - Avoid comments that only repeat obvious syntax, trivial getters/setters, or simple assignments.
 

@@ -83,6 +83,7 @@ Mode rules:
    - 只实现该 `task-id` 范围
    - 为类/模块、公开方法、重要字段/状态、复杂条件分支、边界处理、外部假设和风险逻辑补充必要注释
    - 注释必须解释职责、意图、业务含义、约束或不变量，不要只复述显而易见的语法
+   - 先运行编译/构建命令（如 `mvn compile`、`gradle classes`），编译通过后再运行测试
    - 运行相关验证命令
    - 更新 `04-acceptance.md`，记录测试证据、风险、回滚方案、comment review result 和验收结论
    - 输出 changed files、test evidence、risks、rollback、comment review result、pending items
