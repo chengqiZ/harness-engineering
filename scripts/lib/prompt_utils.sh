@@ -30,7 +30,10 @@ ensure_file() {
 ensure_dir() {
   local path="$1"
   local label="$2"
-  [[ -d "$path" ]] || fail "$label not found: $path"
+  if [[ ! -d "$path" ]]; then
+    mkdir -p "$path"
+    printf 'create: %s\n' "$path"
+  fi
 }
 
 ensure_task_exists() {
