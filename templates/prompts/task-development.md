@@ -18,6 +18,13 @@ You are the development agent for this repository. Execute only one task and do 
 - Commands, paths, identifiers, protocol fields, error codes, and fixed commit/PR keywords may remain in their original form.
 - Use English as the primary language only when the user explicitly requests it or the target system requires it.
 
+## Code Exploration Rule
+
+- 在回答"某个功能如何工作"、架构问题、定位符号/文件、追踪调用链路或分析跨文件影响时，优先使用 CodeGraph / MCP 工具（例如 `codegraph_explore`）。
+- 仅当需要确认 CodeGraph 未覆盖的具体细节时，才使用 `Read` / `Grep` / `Bash` 等原始命令；不要为了做 CodeGraph 已能完成的索引和查询工作而反复调用 `ls`、`grep`、`find`。
+- 对"某个符号在哪里定义/被谁调用/改动会影响什么"这类问题，首选 `codegraph_search`、`codegraph_callers`、`codegraph_callees`、`codegraph_impact`。
+- 对"某段代码如何流转/从哪里到哪里"这类问题，首选 `codegraph_explore` 并直接给出相关符号或文件名作为查询。
+
 ## Start Checks
 
 Before coding, verify:
